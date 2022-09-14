@@ -1,0 +1,15 @@
+version: "1"
+packages:
+  - name: "db"
+    path: "./db/sqlc/"
+    queries: "./db/query/"
+    schema: "./db/migration/"
+    engine: "postgresql"
+    emit_prepared_queries: false # false is easier for development, true could optimize performance
+    emit_interface: true # Querier interface for the generated package, helpful for mocking database and testing higher-level functions
+    emit_exact_table_names: true
+    emit_empty_slices: true
+    emit_json_tags: true
+    json_tags_case_style: "none"
+rename:
+  url: "URL"
