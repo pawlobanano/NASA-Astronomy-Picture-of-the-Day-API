@@ -1,0 +1,113 @@
+{
+	"info": {
+		"_postman_id": "71f2123c-42e3-4e89-89bb-9c1f72ea06b0",
+		"name": "Gogo Space",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1221579"
+	},
+	"item": [
+		{
+			"name": "/pictures",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{address}}:{{port}}/pictures?from=2019-12-06&to=2019-12-07",
+					"host": [
+						"{{address}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"pictures"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2019-12-06"
+						},
+						{
+							"key": "to",
+							"value": "2019-12-07"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pictures - request returning error response",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{address}}:{{port}}/pictures?from=&to=",
+					"host": [
+						"{{address}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"pictures"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": ""
+						},
+						{
+							"key": "to",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "DEMO_KEY",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "API_KEY",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "address",
+			"value": "localhost",
+			"type": "string"
+		},
+		{
+			"key": "port",
+			"value": "8080",
+			"type": "string"
+		}
+	]
+}
