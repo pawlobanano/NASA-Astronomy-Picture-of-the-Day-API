@@ -1,4 +1,5 @@
 # Gogo Space
+A service for getting images URL from [NASA Astronomy Picture of the Day API](https://api.nasa.gov/#browseAPI).
 
 ## docs/
 Includes a Postman collection.
