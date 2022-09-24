@@ -19,7 +19,3 @@ go.work
 
 # All log files
 *.log
-
-# UI
-/ui/build/*
-!/ui/build/README

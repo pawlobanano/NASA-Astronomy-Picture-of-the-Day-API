@@ -1,13 +1,20 @@
 package api
 
 import (
+	"embed"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pawlobanano/UGF3ZcWCIEdvZ29BcHBzIE5BU0E/config"
 )
 
-var NASA_APOD_API_URL string = "https://api.nasa.gov/planetary/apod"
+var TestDir embed.FS
+
+var (
+	NASA_APOD_API_URL string = "https://api.nasa.gov/planetary/apod"
+	// UserIPLimiter stores IPs and boolean flags indicating whether the client IP is already in use/connected.
+	UserIPLimiter = make(map[string]bool)
+)
 
 // Server serves HTTP requests for our url-collector service.
 type Server struct {
@@ -28,7 +35,7 @@ func NewServer(config config.Config) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.GET("pictures", server.listPicturesURL).Use(apiRateLimiter(server.config.ConcurrentRequests))
+	router.GET("pictures", server.listPicturesURL)
 
 	server.router = router
 }
