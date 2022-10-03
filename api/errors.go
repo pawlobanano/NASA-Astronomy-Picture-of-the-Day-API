@@ -17,3 +17,9 @@ func apiRateLimitExceededResponse() error {
 	message := "API rate limit exceeded"
 	return fmt.Errorf("%d %s", http.StatusTooManyRequests, message)
 }
+
+// fromLaterThanToResponse returns a formatted error message.
+func fromLaterThanToResponse() error {
+	message := "'from' must be earlier than 'to'"
+	return fmt.Errorf("%s", message)
+}

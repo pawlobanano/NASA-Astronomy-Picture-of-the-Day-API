@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -33,17 +32,17 @@ func (server *Server) listPicturesURL(ctx *gin.Context) {
 	}
 
 	if reqForm.From.After(reqForm.To) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(errors.New("'from' should be earlier than 'to'")))
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(fromLaterThanToResponse()))
 		return
 	}
 
-	fromDate, err := parseTime(reqForm.From, ctx)
+	fromDate, err := parseDate(reqForm.From, ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	toDate, err := parseTime(reqForm.To, ctx)
+	toDate, err := parseDate(reqForm.To, ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -148,7 +147,8 @@ func getAPIResponse(id int, NASAAPIKey string, day string) (NASAAPODJSONResponse
 	return result, nil
 }
 
-func parseTime(reqTime time.Time, ctx *gin.Context) (time.Time, error) {
+// parseDate parses reqTime to "2006-01-02" time format.
+func parseDate(reqTime time.Time, ctx *gin.Context) (time.Time, error) {
 	date, err := time.Parse("2006-01-02", fmt.Sprint(reqTime.Format("2006-01-02")))
 	if err != nil {
 		return time.Time{}, err
