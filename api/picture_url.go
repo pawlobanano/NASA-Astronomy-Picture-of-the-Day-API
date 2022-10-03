@@ -26,12 +26,6 @@ type ListPicturesURLFormRequest struct {
 
 // listPicturesURL returns JSON object with array of pictures URLs.
 func (server *Server) listPicturesURL(ctx *gin.Context) {
-	if UserIPLimiter[ctx.ClientIP()] {
-		ctx.AbortWithStatusJSON(http.StatusTooManyRequests, errorResponse(apiRateLimitExceededResponse()))
-		return
-	}
-	UserIPLimiter[ctx.ClientIP()] = true
-
 	var reqForm ListPicturesURLFormRequest
 	if err := ctx.ShouldBindQuery(&reqForm); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, errorResponse(err))
@@ -43,20 +37,20 @@ func (server *Server) listPicturesURL(ctx *gin.Context) {
 		return
 	}
 
-	startDate, err := time.Parse("2006-01-02", fmt.Sprint(reqForm.From.Format("2006-01-02")))
+	fromDate, err := parseTime(reqForm.From, ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	endDate, err := time.Parse("2006-01-02", fmt.Sprint(reqForm.To.Format("2006-01-02")))
+	toDate, err := parseTime(reqForm.To, ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
 	days := make([]string, 0)
-	for d := startDate; !d.After(endDate); d = d.AddDate(0, 0, 1) {
+	for d := fromDate; !d.After(toDate); d = d.AddDate(0, 0, 1) {
 		days = append(days, fmt.Sprint(d.Format("2006-01-02")))
 	}
 
@@ -82,14 +76,20 @@ func (server *Server) listPicturesURL(ctx *gin.Context) {
 		URLs = append(URLs, result)
 	}
 
-	if <-errors == fmt.Sprint(http.StatusTooManyRequests) {
-		ctx.AbortWithStatusJSON(http.StatusTooManyRequests, errorResponse(apiRateLimitExceededResponse()))
-		UserIPLimiter[ctx.ClientIP()] = false
-		return
+	select {
+	case s, ok := <-errors:
+		if ok && s == fmt.Sprint(http.StatusTooManyRequests) {
+			log.Printf("apiRateLimitExceeded with %v error code", s)
+			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, errorResponse(apiRateLimitExceededResponse()))
+			return
+		} else {
+			log.Printf("errors channel closed.")
+		}
+	default:
+		log.Printf("no value ready on errors channel, moving on.")
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"urls": URLs})
-	UserIPLimiter[ctx.ClientIP()] = false
 }
 
 // worker is a goroutine taking 'w' (worker id), 'jobs', 'errors', 'results' channels.
@@ -122,6 +122,10 @@ func getAPIResponse(id int, NASAAPIKey string, day string) (NASAAPODJSONResponse
 		return NASAAPODJSONResponse{}, err
 	}
 
+	if resp.Body != nil {
+		defer resp.Body.Close()
+	}
+
 	if resp.StatusCode == http.StatusTooManyRequests {
 		return NASAAPODJSONResponse{}, fmt.Errorf("%v", http.StatusTooManyRequests)
 	}
@@ -142,4 +146,13 @@ func getAPIResponse(id int, NASAAPIKey string, day string) (NASAAPODJSONResponse
 	}
 
 	return result, nil
+}
+
+func parseTime(reqTime time.Time, ctx *gin.Context) (time.Time, error) {
+	date, err := time.Parse("2006-01-02", fmt.Sprint(reqTime.Format("2006-01-02")))
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return date, nil
 }
