@@ -12,8 +12,6 @@ var TestDir embed.FS
 
 var (
 	NASA_APOD_API_URL string = "https://api.nasa.gov/planetary/apod"
-	// UserIPLimiter stores IPs and boolean flags indicating whether the client IP is already in use/connected.
-	UserIPLimiter = make(map[string]bool)
 )
 
 // Server serves HTTP requests for our url-collector service.
