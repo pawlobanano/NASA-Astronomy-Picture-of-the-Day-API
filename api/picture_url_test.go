@@ -77,6 +77,7 @@ func TestListPicturesURL(t *testing.T) {
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
+				require.EqualError(t, fromLaterThanToResponse(), "'from' must be earlier than 'to'")
 			},
 		},
 	}
