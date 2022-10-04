@@ -18,7 +18,7 @@ export CONCURRENT_REQUESTS=5
     make server
     ```
 
-- Run test
+- Run tests
     ```bash
     make test
     ```
