@@ -4,8 +4,8 @@ import (
 	"embed"
 	"log"
 
-	"github.com/pawlobanano/UGF3ZcWCIEdvZ29BcHBzIE5BU0E/api"
-	"github.com/pawlobanano/UGF3ZcWCIEdvZ29BcHBzIE5BU0E/config"
+	"github.com/pawlobanano/NASA-Astronomy-Picture-of-the-Day-API/api"
+	"github.com/pawlobanano/NASA-Astronomy-Picture-of-the-Day-API/config"
 )
 
 //go:embed test/json

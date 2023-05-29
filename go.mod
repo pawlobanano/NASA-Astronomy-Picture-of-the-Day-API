@@ -1,4 +1,4 @@
-module github.com/pawlobanano/UGF3ZcWCIEdvZ29BcHBzIE5BU0E
+module github.com/pawlobanano/NASA-Astronomy-Picture-of-the-Day-API
 
 go 1.19
 
