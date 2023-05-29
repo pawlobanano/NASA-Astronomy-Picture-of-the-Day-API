@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pawlobanano/UGF3ZcWCIEdvZ29BcHBzIE5BU0E/config"
+	"github.com/pawlobanano/NASA-Astronomy-Picture-of-the-Day-API/config"
 )
 
 var TestDir embed.FS
